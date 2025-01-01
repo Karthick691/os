@@ -1,0 +1,13 @@
+#include <stdio.h>
+
+int main() {
+    int n = 3, bt[] = {5, 3, 8}, wt = 0, tat = 0;
+    printf("Process\tBurst Time\tWait Time\tTurnaround Time\n");
+
+    for (int i = 0; i < n; i++) {
+        tat += bt[i];
+        printf("P%d\t%d\t\t%d\t\t%d\n", i + 1, bt[i], wt, tat);
+        wt += bt[i];
+    }
+    return 0;
+}
