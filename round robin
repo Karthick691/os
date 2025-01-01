@@ -1,0 +1,88 @@
+#include <stdio.h>
+
+#define MAX_PROCESSES 10
+
+// Function to implement the Round Robin scheduling algorithm
+void roundRobin(int processes[], int n, int bt[], int quantum) {
+    int wt[MAX_PROCESSES], tat[MAX_PROCESSES];
+    int rem_bt[MAX_PROCESSES];
+    
+    // Copy burst times to remaining burst times
+    for (int i = 0; i < n; i++) {
+        rem_bt[i] = bt[i];
+    }
+    
+    int time = 0;  // Current time
+
+    // Initialize waiting time and turnaround time
+    for (int i = 0; i < n; i++) {
+        wt[i] = 0;
+        tat[i] = 0;
+    }
+
+    // Round Robin scheduling loop
+    while (1) {
+        int done = 1; // Flag to check if all processes are completed
+
+        for (int i = 0; i < n; i++) {
+            if (rem_bt[i] > 0) {
+                done = 0; // At least one process is not completed
+
+                // If remaining burst time is greater than quantum
+                if (rem_bt[i] > quantum) {
+                    rem_bt[i] -= quantum;
+                    time += quantum;
+                }
+                else { // If remaining burst time is less than or equal to quantum
+                    time += rem_bt[i];
+                    wt[i] = time - bt[i];  // Waiting time = total time - burst time
+                    rem_bt[i] = 0;
+                }
+            }
+        }
+
+        // If all processes are completed, break the loop
+        if (done == 1) {
+            break;
+        }
+    }
+
+    // Calculate Turnaround Time (TAT = BT + WT)
+    for (int i = 0; i < n; i++) {
+        tat[i] = bt[i] + wt[i];
+    }
+
+    // Display the result
+    printf("\nProcess No.\tBurst Time\tWaiting Time\tTurnaround Time\n");
+    for (int i = 0; i < n; i++) {
+        printf("%d\t\t%d\t\t%d\t\t%d\n", i + 1, bt[i], wt[i], tat[i]);
+    }
+}
+
+// Main function
+int main() {
+    int n, quantum;
+
+    // Input number of processes
+    printf("Enter the number of processes: ");
+    scanf("%d", &n);
+
+    int processes[MAX_PROCESSES], burst_time[MAX_PROCESSES];
+
+    // Input burst time for each process
+    printf("Enter the burst time for each process:\n");
+    for (int i = 0; i < n; i++) {
+        processes[i] = i + 1;  // Process number
+        printf("Process %d: ", i + 1);
+        scanf("%d", &burst_time[i]);
+    }
+
+    // Input time quantum
+    printf("Enter the time quantum: ");
+    scanf("%d", &quantum);
+
+    // Call Round Robin function
+    roundRobin(processes, n, burst_time, quantum);
+
+    return 0;
+}
